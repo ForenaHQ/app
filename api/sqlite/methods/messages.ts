@@ -7,7 +7,7 @@ import { Message } from 'types/messages'
 
 
 // Functions:
-const sendTextMessage = async ({
+const storeTextMessage = async ({
   conversationID,
   message,
 }: {
@@ -16,6 +16,12 @@ const sendTextMessage = async ({
 }) => {
   const returnable = createReturnable()
   try {
+    /**
+     * TODO:
+     * @Sharan420 - Given the conversationID and message object, create an entry in the 
+     * Ephemeral Database under the table name of the conversationID. The entry being the
+     * message. Use message.id as the primary key.
+     */
     returnable.status = STATUS.SUCCESS
     return returnable
   } catch (e) {
@@ -27,5 +33,5 @@ const sendTextMessage = async ({
 
 // Exports:
 export default {
-  sendTextMessage,
+  storeTextMessage
 }

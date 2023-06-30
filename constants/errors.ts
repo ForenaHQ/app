@@ -2,6 +2,9 @@
 const ERRORS = {
   AUTH: {
     UNAUTHENTICATED: 'auth/unauthenticated'
+  },
+  SQLITE: {
+    
   }
 }
 

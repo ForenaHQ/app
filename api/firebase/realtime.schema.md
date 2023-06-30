@@ -15,40 +15,46 @@
       }
     }
   },
+  "invites": {
+    "${ inviteCode }": "${ UID }"
+  },
   "users": {
     "${ UID }": {
-      "name": "${ name }",
-      "phoneNumber": "${ phoneNumber }",
-      "activityStatus": {
-        "privacy": "EVERYONE" | "CONTACTS" | "ONLY_ME",
-        "isOnline": boolean,
-      },
-      "profilePicture": "${ profilePicture }",
+      "isOnline": boolean | null,
       "conversations": {
         "${ conversationID }": "ADMIN" | "MEMBER",
         ...
       },
       "friends": {
         "${ UID }": {
-          "friendsSince": Timestamp,
-          "conversationID": "${ conversationID }"
-        },
-        ...
+          "stats": {
+            "messages": number,
+            "media": {
+              "photo": number,
+              "gif": number,
+              "video": number,
+              "sticker": number
+            }
+          }
+        }
       },
+      "invites": {
+        "codes": string[]
+      }
     },
     ...
   },
   "conversations": {
     "${ conversationID }": {
-      "name": "${ conversationName }" | undefined,
+      "id": "${ conversationID }",
       "members": {
         "${ UID }": "ADMIN" | "MEMBER",
         ...
       },
-      "backgroundImage": "${ downloadURL }",
       "messages": {
         "${ messageID }": {
-          "from": "${ UID }",
+          "id": "${ messageID }",
+          "author": "${ UID }",
           "messageType": "TEXT" | "MEDIA",
           "body": "${ body }" | "${ mediaType }",
           "timestamp": Timestamp,
@@ -56,15 +62,17 @@
         ...
       },
       "latestMessage": {
-        "from": "${ UID }",
+        "id": "${ messageID }",
+        "author": "${ UID }",
         "messageType": "TEXT" | "MEDIA",
         "body": "${ body }" | "${ mediaType }",
         "timestamp": Timestamp,
       },
       "pet": {
-        "type": "DOG" | "CAT" | "BIRD" | "PLANT" | ...,
-        "breed": string,
-        "currentActivity": string
+        "currentActivity": string,
+        "metadata" {
+          ...ALL VITALS HERE
+        }
       }
     },
     ...

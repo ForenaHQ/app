@@ -33,8 +33,6 @@
   "conversations": {
     "${ conversationID }": {
       "id": "${ conversationID }",
-      "name": "${ conversationName }" | undefined,
-      "backgroundImage": "${ downloadURL }",
       "pet": {
         "type": "DOG" | "CAT" | "BIRD" | "PLANT" | ...,
         "breed": string,

@@ -7,7 +7,11 @@ import { v4 } from 'uuid'
 
 
 // Typescript:
-import { ConversationEngagement, Message, MessageType } from 'types/messages'
+import {
+  ConversationEngagement,
+  Message,
+  MessageType,
+} from 'types/messages'
 import createReturnable, { STATUS } from 'utils/returnable'
 
 

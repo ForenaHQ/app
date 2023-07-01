@@ -47,6 +47,7 @@
   "conversations": {
     "${ conversationID }": {
       "id": "${ conversationID }",
+      "name": "${ conversationName }" | undefined,
       "members": {
         "${ UID }": "ADMIN" | "MEMBER",
         ...
@@ -58,6 +59,8 @@
           "messageType": "TEXT" | "MEDIA",
           "body": "${ body }" | "${ mediaType }",
           "timestamp": Timestamp,
+          "replyingTo": "${ messageID }",
+          "isSpoiler": boolean | undefined,
         },
         ...
       },

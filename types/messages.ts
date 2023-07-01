@@ -1,9 +1,4 @@
 // Exports:
-export enum ConversationMemberType {
-  ADMIN = 'ADMIN',
-  MEMBER = 'MEMBER'
-}
-
 export enum MessageType {
   TEXT = 'TEXT',
   MEDIA = 'MEDIA'
@@ -22,28 +17,20 @@ export interface Media {
   caption?: string
 }
 
+export type Reactions = Record<string, number>
+
 export interface Message {
   id: string
   author: string
   messageType: MessageType
   body: string | Media
   timestamp: number
+  replyingTo?: string
+  isSpoiler?: boolean
+  reactions?: Reactions
 }
 
-export interface Conversation {
-  id: string
-  name?: string
-  members: ConversationMemberType[]
-  backgroundImage?: string
-  messages: Message[]
-}
-
-export interface DatabaseConversation extends Omit<Conversation, 'members' | 'messages'> {
-  members: Record<string, ConversationMemberType>
-  messages: Record<string, Message>
-}
-
-export interface ConversationEngagement {
-  isReceived: boolean
-  isSeen: boolean
-}
+export interface LatestMessage extends Omit<
+  Message,
+  'replyingTo' | 'reactions'
+> {}

@@ -47,11 +47,14 @@
   "conversations": {
     "${ conversationID }": {
       "id": "${ conversationID }",
+      "isGroup"?: boolean,
       "name": "${ conversationName }" | undefined,
       "members": {
         "${ UID }": "ADMIN" | "MEMBER",
         ...
       },
+      "profilePicture"?: string,
+      "backgroundImage"?: string,
       "messages": {
         "${ messageID }": {
           "id": "${ messageID }",
@@ -60,7 +63,10 @@
           "body": "${ body }" | "${ mediaType }",
           "timestamp": Timestamp,
           "replyingTo": "${ messageID }",
-          "isSpoiler": boolean | undefined,
+          "isSpoiler"?: boolean,
+          "reactions"?: {
+            "👍": number
+          }
         },
         ...
       },
@@ -70,14 +76,17 @@
         "messageType": "TEXT" | "MEDIA",
         "body": "${ body }" | "${ mediaType }",
         "timestamp": Timestamp,
+        "isSpoiler"?: boolean
       },
-      "received": {
-        "${ UID }": Timestamp,
-        ...
-      },
-      "seen": {
-        "${ UID }": Timestamp,
-        ...
+      "engagementCursors": {
+        "received": {
+          "${ UID }": Timestamp,
+          ...
+        },
+        "seen": {
+          "${ UID }": Timestamp,
+          ...
+        },
       },
       "pet": {
         "currentActivity": string,

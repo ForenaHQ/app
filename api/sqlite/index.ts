@@ -1,10 +1,10 @@
 // Slices:
-import messagesMethods from './methods/messages'
+import conversationsMethods from './methods/conversations'
 
 
 // Constants:
 const SQLITE = {
-  messages: messagesMethods,
+  conversations: conversationsMethods,
 }
 
 

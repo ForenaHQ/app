@@ -1,41 +1,36 @@
 /**
  * TODO:
- * reactToMessage
- * sendMediaMessage
- * deleteMessage
+ * Queries:
+ * getDiurnalMessages
+ * 
+ * Mutation:
+ * createConversation
+ * editConversationDetails
  */
 
 // Packages:
-import FIREBASE from 'api/firebase'
-import { AUTH } from 'api/firebase/config'
-import REDUX from 'api/redux'
-import SQLITE from 'api/sqlite'
-import { v4 } from 'uuid'
 import createReturnable, { STATUS } from 'utils/returnable'
+import SQLITE from 'api/sqlite'
+import FIREBASE from 'api/firebase'
+import REDUX from 'api/redux'
 
 
 // Typescript:
-import {
-  Message,
-  MessageType,
-} from 'types/messages'
+import { MessageEngagementCursor } from 'types/conversations'
+import { AUTH } from 'api/firebase/config'
 
 
 // Constants:
 import ERRORS from 'constants/errors'
 
 
-// Exports:
-const sendTextMessage = async ({
+// Functions:
+const updateEngagementCursor = async ({
   conversationID,
-  body,
-  isSpoiler,
-  replyingTo,
+  engagement,
 }: {
   conversationID: string
-  body: string
-  isSpoiler: Message['isSpoiler']
-  replyingTo: Message['replyingTo']
+  engagement: Partial<MessageEngagementCursor>
 }) => {
   // Setup:
   const returnable = createReturnable<any>()
@@ -44,23 +39,18 @@ const sendTextMessage = async ({
     returnable.payload = ERRORS.AUTH.UNAUTHENTICATED
     return returnable
   }
-  const message: Message = {
-    body,
-    author: currentUser.uid,
-    id: v4(),
-    messageType: MessageType.TEXT,
-    timestamp: Date.now(),
-    isSpoiler,
-    replyingTo,
-  }
+  const UID = currentUser.uid
+  const localTime = Date.now()
 
   // SQL:
   const {
     status: SQLiteStatus,
     payload: SQLitePayload
-  } = await SQLITE.conversations.storeTextMessage({
+  } = await SQLITE.conversations.updateEngagementCursor({
     conversationID,
-    message,
+    UID,
+    engagement,
+    localTime,
   })
   if (!SQLiteStatus) {
     returnable.payload = SQLitePayload
@@ -71,9 +61,10 @@ const sendTextMessage = async ({
   const {
     status: firebaseStatus,
     payload: firebasePayload
-  } = await FIREBASE.messages.sendTextMessage({
+  } = await FIREBASE.conversations.updateEngagementCursor({
     conversationID,
-    message,
+    UID,
+    engagement,
   })
   if (!firebaseStatus) {
     returnable.payload = firebasePayload
@@ -81,8 +72,11 @@ const sendTextMessage = async ({
   }
 
   // Redux:
-  REDUX.conversations.addMessage({
-    message,
+  REDUX.conversations.updateEngagementCursor({
+    conversationID,
+    UID,
+    engagement,
+    localTime,
   })
 
   // Return:
@@ -90,8 +84,10 @@ const sendTextMessage = async ({
   return returnable
 }
 
+
+// Exports:
 export default {
   mutations: {
-    sendTextMessage,
+    updateEngagementCursor,
   }
 }

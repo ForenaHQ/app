@@ -1,15 +1,33 @@
 // Packages:
 import createReturnable, { STATUS } from 'utils/returnable'
+import CONVERSATIONS from './conversations'
 
 
 // Typescript:
 import {
-  ConversationEngagement,
-  Message
+  Media,
+  Message,
+  MessageType
 } from 'types/messages'
 
 
 // Functions:
+const updateMetrics = {
+  incrementMessageCount: async (message: Message) => {
+    const returnable = createReturnable<any>()
+    try {
+      const isMedia = message.messageType === MessageType.MEDIA
+      const mediaType = isMedia ? (message.body as Media).type : undefined
+      // TODO: Call Realtime Database
+      returnable.status = STATUS.SUCCESS
+      return returnable
+    } catch (e) {
+      returnable.payload = e as Error
+      return returnable
+    }
+  }
+}
+
 const sendTextMessage = async ({
   conversationID,
   message,
@@ -19,23 +37,11 @@ const sendTextMessage = async ({
 }) => {
   const returnable = createReturnable()
   try {
-    returnable.status = STATUS.SUCCESS
-    return returnable
-  } catch (e) {
-    returnable.payload = e as Error
-    return returnable
-  }
-}
-
-export const updateConversationEngagement = async ({
-  conversationID,
-  engagement,
-}: {
-  conversationID: string
-  engagement: Partial<ConversationEngagement>
-}) => {
-  const returnable = createReturnable()
-  try {
+    const { status: setLatestMessageStatus } = await CONVERSATIONS.setLatestMessage({
+      conversationID,
+      message
+    })
+    const { status: incrementMessageStatus } = await updateMetrics.incrementMessageCount(message)
     returnable.status = STATUS.SUCCESS
     return returnable
   } catch (e) {
@@ -48,5 +54,4 @@ export const updateConversationEngagement = async ({
 // Exports:
 export default {
   sendTextMessage,
-  updateConversationEngagement,
 }

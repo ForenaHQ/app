@@ -4,14 +4,14 @@ import { configureStore } from '@reduxjs/toolkit'
 
 // Slices:
 import profileSlice from '../slices/profile'
-import messagesSlice from '../slices/messages'
+import conversationsSlice from '../slices/conversations'
 
 
 // Constants:
 const reduxStore = configureStore({
   reducer: {
     profile: profileSlice.reducer,
-    messages: messagesSlice.reducer,
+    conversations: conversationsSlice.reducer,
   }
 })
 

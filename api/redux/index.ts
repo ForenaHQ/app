@@ -1,12 +1,12 @@
 // Slices:
 import profileSlice from './slices/profile'
-import messagesSlice from './slices/messages'
+import conversationsSlice from './slices/conversations'
 
 
 // Constants:
 const REDUX = {
   profile: profileSlice.actions,
-  messages: messagesSlice.actions,
+  conversations: conversationsSlice.actions,
 }
 
 

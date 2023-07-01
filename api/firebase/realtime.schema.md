@@ -68,6 +68,14 @@
         "body": "${ body }" | "${ mediaType }",
         "timestamp": Timestamp,
       },
+      "received": {
+        "${ UID }": Timestamp,
+        ...
+      },
+      "seen": {
+        "${ UID }": Timestamp,
+        ...
+      },
       "pet": {
         "currentActivity": string,
         "metadata" {

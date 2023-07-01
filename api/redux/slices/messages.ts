@@ -3,7 +3,11 @@ import { createSlice } from '@reduxjs/toolkit'
 
 
 // Typescript:
-import { Conversation, Message } from 'types/messages'
+import {
+  Conversation,
+  ConversationEngagement,
+  Message
+} from 'types/messages'
 
 
 // Slices:
@@ -11,7 +15,8 @@ const messagesSlice = createSlice({
   name: 'messages',
   initialState: {
     currentConversationID: null as string | null,
-    conversations: {} as Map<string, Conversation>
+    conversations: {} as Record<string, Conversation>,
+    conversationEngagement: {} as Record<string, ConversationEngagement>
   },
   reducers: {
     setCurrentConversationID: (
@@ -28,7 +33,7 @@ const messagesSlice = createSlice({
         payload: Conversation
       }
     ) => {
-      state.conversations.set(action.payload.id, action.payload)
+      state.conversations[action.payload.id] = action.payload
     },
     addMessage: (
       state,
@@ -39,9 +44,23 @@ const messagesSlice = createSlice({
         }
       }
     ) => {
-      state.conversations
-        .get(action.payload.conversationID)?.messages
-        .push(action.payload.message)
+      const messages = state.conversations[action.payload.conversationID].messages
+      messages.push(action.payload.message)
+      state.conversations[action.payload.conversationID].messages = messages
+    },
+    updateConversationEngagement: (
+      state,
+      action: {
+        payload: {
+          conversationID: string
+          engagement: Partial<ConversationEngagement>
+        }
+      }
+    ) => {
+      state.conversationEngagement[ action.payload.conversationID ] = {
+        ...state.conversationEngagement[ action.payload.conversationID ],
+        ...action.payload.engagement,
+      }
     }
   }
 })

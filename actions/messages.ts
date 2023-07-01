@@ -7,7 +7,7 @@ import { v4 } from 'uuid'
 
 
 // Typescript:
-import { Message, MessageType } from 'types/messages'
+import { ConversationEngagement, Message, MessageType } from 'types/messages'
 import createReturnable, { STATUS } from 'utils/returnable'
 
 
@@ -68,6 +68,58 @@ export const sendTextMessage = async ({
   REDUX.messages.addMessage({
     conversationID,
     message,
+  })
+
+  // Return:
+  returnable.status = STATUS.SUCCESS
+  return returnable
+}
+
+export const updateConversationEngagement = async ({
+  conversationID,
+  engagement,
+}: {
+  conversationID: string
+  engagement: Partial<ConversationEngagement>
+}) => {
+  // Setup:
+  const returnable = createReturnable<any>()
+  const currentUser = AUTH.currentUser
+  if (!currentUser) {
+    returnable.payload = ERRORS.AUTH.UNAUTHENTICATED
+    return returnable
+  }
+
+  // SQL:
+  const {
+    status: SQLiteStatus,
+    payload: SQLitePayload
+  } = await SQLITE.messages.updateConversationEngagement({
+    conversationID,
+    engagement,
+  })
+  if (!SQLiteStatus) {
+    returnable.payload = SQLitePayload
+    return returnable
+  }
+
+  // Firebase:
+  const {
+    status: firebaseStatus,
+    payload: firebasePayload
+  } = await FIREBASE.messages.updateConversationEngagement({
+    conversationID,
+    engagement,
+  })
+  if (!firebaseStatus) {
+    returnable.payload = firebasePayload
+    return returnable
+  }
+
+  // Redux:
+  REDUX.messages.updateConversationEngagement({
+    conversationID,
+    engagement,
   })
 
   // Return:

@@ -39,6 +39,11 @@ export interface Conversation {
 }
 
 export interface DatabaseConversation extends Omit<Conversation, 'members' | 'messages'> {
-  members: Map<string, ConversationMemberType>
-  messages: Map<string, Message>
+  members: Record<string, ConversationMemberType>
+  messages: Record<string, Message>
+}
+
+export interface ConversationEngagement {
+  isReceived: boolean
+  isSeen: boolean
 }
